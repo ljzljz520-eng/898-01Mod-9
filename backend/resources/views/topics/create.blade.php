@@ -28,8 +28,24 @@
                     <option value="tech" {{ old('category') == 'tech' ? 'selected' : '' }}>技术交流</option>
                     <option value="study" {{ old('category') == 'study' ? 'selected' : '' }}>学习心得</option>
                     <option value="question" {{ old('category') == 'question' ? 'selected' : '' }}>问题求助</option>
+                    <option value="maintenance" {{ old('category') == 'maintenance' ? 'selected' : '' }}>物业维修</option>
+                    <option value="conflict" {{ old('category') == 'conflict' ? 'selected' : '' }}>邻里矛盾</option>
+                    <option value="fee" {{ old('category') == 'fee' ? 'selected' : '' }}>费用公示</option>
                 </select>
                 @error('category')
+                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                @enderror
+            </div>
+
+            <div class="mb-4">
+                <label for="circle_type" class="block text-gray-700 text-sm font-medium mb-2">圈层</label>
+                <select id="circle_type" name="circle_type" required
+                        class="input-field @error('circle_type') border-red-500 @enderror">
+                    @foreach($userCircles as $circle)
+                        <option value="{{ $circle }}" {{ old('circle_type') == $circle ? 'selected' : '' }}>{{ circle_name($circle) }}</option>
+                    @endforeach
+                </select>
+                @error('circle_type')
                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                 @enderror
             </div>
@@ -42,6 +58,9 @@
                 @error('content')
                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                 @enderror
+            </div>
+
+            <div data-extra-fields class="mb-6">
             </div>
 
             <div class="flex gap-4">

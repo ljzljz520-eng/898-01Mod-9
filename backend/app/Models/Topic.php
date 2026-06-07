@@ -211,6 +211,10 @@ class Topic extends Model
             ];
         }
 
+        if (isset($data['building']) && isset($data['building']['name'])) {
+            $filtered['building_name'] = $data['building']['name'];
+        }
+
         return $filtered;
     }
 }

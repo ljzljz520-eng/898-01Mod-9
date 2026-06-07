@@ -23,3 +23,18 @@ Route::delete('replies/{reply}', [App\Http\Controllers\ReplyController::class, '
 Route::resource('knowledge-cards', App\Http\Controllers\KnowledgeCardController::class);
 Route::post('knowledge-cards/{knowledgeCard}/review', [App\Http\Controllers\KnowledgeCardController::class, 'review'])->name('knowledge-cards.review')->middleware('auth');
 Route::get('knowledge-cards-review', [App\Http\Controllers\KnowledgeCardController::class, 'reviewList'])->name('knowledge-cards.review-list')->middleware('auth');
+
+// 用户资料路由
+Route::get('/profile', [App\Http\Controllers\AuthController::class, 'profile'])->name('profile')->middleware('auth');
+
+// 认证相关路由
+Route::get('/verify-apply', [App\Http\Controllers\AuthController::class, 'showVerificationForm'])->name('verify.apply')->middleware('auth');
+Route::post('/verify-apply', [App\Http\Controllers\AuthController::class, 'applyVerification'])->middleware('auth');
+Route::get('/verification-list', [App\Http\Controllers\AuthController::class, 'verificationList'])->name('verification.list')->middleware('auth');
+Route::post('/verification-review/{user}', [App\Http\Controllers\AuthController::class, 'reviewVerification'])->name('verification.review')->middleware('auth');
+Route::get('/move-out', [App\Http\Controllers\AuthController::class, 'showMoveOutForm'])->name('move.out')->middleware('auth');
+Route::post('/move-out', [App\Http\Controllers\AuthController::class, 'moveOut'])->middleware('auth');
+Route::post('/cancel-verification', [App\Http\Controllers\AuthController::class, 'cancelVerification'])->name('verification.cancel')->middleware('auth');
+
+// 楼栋路由
+Route::resource('buildings', App\Http\Controllers\BuildingController::class);

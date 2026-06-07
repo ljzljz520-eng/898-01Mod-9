@@ -16,6 +16,17 @@ class ReplyController extends Controller
 
     public function store(Request $request, Topic $topic)
     {
+        $user = auth()->user();
+
+        if ($topic->circle_type !== 'public') {
+            if ($user->isMoved()) {
+                return back()->with('error', '您已搬离小区，无法回复内部话题');
+            }
+            if (!$user->canAccessCircle($topic->circle_type, $topic->building_id)) {
+                abort(403, '无权访问该圈层话题');
+            }
+        }
+
         $validator = Validator::make($request->all(), [
             'content' => 'required|string|min:5|max:5000',
         ], [

@@ -114,6 +114,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const listEl = document.querySelector('[data-topic-list]');
         const paginationEl = document.querySelector('[data-topic-pagination]');
         const categorySelect = filterForm.querySelector('select[name="category"]');
+        const circleTypeSelect = filterForm.querySelector('select[name="circle_type"]');
         const searchInput = filterForm.querySelector('input[name="search"]');
 
         const buildUrl = () => {
@@ -158,6 +159,12 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
 
+        if (circleTypeSelect) {
+            circleTypeSelect.addEventListener('change', () => {
+                updateList(buildUrl());
+            });
+        }
+
         filterForm.addEventListener('submit', event => {
             event.preventDefault();
             if (searchInput) searchInput.blur();
@@ -172,5 +179,101 @@ document.addEventListener('DOMContentLoaded', function() {
                 updateList(link.href);
             });
         }
+    }
+
+    // 用户下拉菜单
+    const userDropdown = document.querySelector('[data-user-dropdown]');
+    if (userDropdown) {
+        const trigger = userDropdown.querySelector('[data-dropdown-trigger]');
+        const menu = userDropdown.querySelector('[data-dropdown-menu]');
+
+        trigger?.addEventListener('click', (e) => {
+            e.stopPropagation();
+            menu?.classList.toggle('hidden');
+        });
+
+        document.addEventListener('click', () => {
+            menu?.classList.add('hidden');
+        });
+
+        menu?.addEventListener('click', (e) => {
+            e.stopPropagation();
+        });
+    }
+
+    // 动态扩展字段
+    const extraFieldsContainer = document.querySelector('[data-extra-fields]');
+    const categorySelectForExtra = document.querySelector('select[name="category"]');
+    if (extraFieldsContainer && categorySelectForExtra) {
+        const fieldLabels = {
+            unit_number: '单元号',
+            description: '描述',
+            contact_name: '联系人',
+            contact_phone: '联系电话',
+            status: '状态',
+            reported_at: '上报时间',
+            assigned_to: '分配给',
+            resolved_at: '解决时间',
+            cost: '费用',
+            title: '标题',
+            involved_parties: '涉及方',
+            unit_numbers: '涉及单元',
+            contact_info: '联系方式',
+            mediator: '调解人',
+            resolution: '解决方案',
+            fee_type: '费用类型',
+            amount: '金额',
+            due_date: '截止日期',
+            payment_method: '支付方式',
+            paid_at: '支付时间',
+            receipt_number: '收据编号',
+            late_fee: '滞纳金',
+            total_amount: '总金额',
+        };
+
+        const categoryFields = {
+            maintenance: ['unit_number', 'description', 'contact_name', 'contact_phone', 'status', 'reported_at', 'assigned_to', 'resolved_at', 'cost'],
+            conflict: ['title', 'description', 'status', 'reported_at', 'involved_parties', 'unit_numbers', 'contact_info', 'mediator', 'resolution', 'resolved_at'],
+            fee: ['fee_type', 'amount', 'due_date', 'status', 'unit_number', 'payment_method', 'paid_at', 'receipt_number', 'late_fee', 'total_amount'],
+        };
+
+        const existingValues = window.extraFieldValues || {};
+
+        const renderExtraFields = (category) => {
+            const fields = categoryFields[category] || [];
+            if (fields.length === 0) {
+                extraFieldsContainer.innerHTML = '';
+                return;
+            }
+
+            let html = '';
+            fields.forEach(field => {
+                const label = fieldLabels[field] || field;
+                const value = existingValues[field] || '';
+                const inputType = field.includes('at') || field.includes('date') ? 'date' : 'text';
+                const isTextarea = field === 'description' || field === 'resolution' || field === 'involved_parties';
+
+                html += `
+                    <div class="mb-4">
+                        <label for="extra_fields_${field}" class="block text-gray-700 text-sm font-medium mb-2">${label}</label>
+                        ${isTextarea ? `
+                            <textarea id="extra_fields_${field}" name="extra_fields[${field}]" rows="3"
+                                      class="input-field">${value}</textarea>
+                        ` : `
+                            <input type="${inputType}" id="extra_fields_${field}" name="extra_fields[${field}]" value="${value}"
+                                   class="input-field">
+                        `}
+                    </div>
+                `;
+            });
+
+            extraFieldsContainer.innerHTML = html;
+        };
+
+        categorySelectForExtra.addEventListener('change', () => {
+            renderExtraFields(categorySelectForExtra.value);
+        });
+
+        renderExtraFields(categorySelectForExtra.value);
     }
 });

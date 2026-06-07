@@ -39,6 +39,19 @@ class Building extends Model
         return $this->hasMany(BuildingUserHistory::class);
     }
 
+    public function verifiedResidents()
+    {
+        return $this->hasMany(User::class)
+            ->where('verification_status', 'verified')
+            ->whereNull('moved_at');
+    }
+
+    public function movedOutResidents()
+    {
+        return $this->hasMany(User::class)
+            ->whereNotNull('moved_at');
+    }
+
     public function getResidentCountAttribute()
     {
         return $this->users()
