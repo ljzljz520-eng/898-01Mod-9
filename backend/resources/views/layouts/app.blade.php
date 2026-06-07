@@ -24,6 +24,16 @@
                         <a href="{{ route('topics.index') }}" class="text-neutral-600 hover:text-primary-600">
                             讨论
                         </a>
+                        <a href="{{ route('knowledge-cards.index') }}" class="text-neutral-600 hover:text-primary-600">
+                            知识库
+                        </a>
+                        @auth
+                            @if(auth()->user()->isModerator())
+                                <a href="{{ route('knowledge-cards.review-list') }}" class="text-neutral-600 hover:text-primary-600">
+                                    待复核
+                                </a>
+                            @endif
+                        @endauth
                     </div>
                 </div>
                 <div class="flex items-center space-x-4 text-sm">

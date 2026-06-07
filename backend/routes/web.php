@@ -18,3 +18,8 @@ Route::post('/logout', [App\Http\Controllers\AuthController::class, 'logout'])->
 Route::resource('topics', App\Http\Controllers\TopicController::class);
 Route::post('topics/{topic}/replies', [App\Http\Controllers\ReplyController::class, 'store'])->name('replies.store')->middleware('auth');
 Route::delete('replies/{reply}', [App\Http\Controllers\ReplyController::class, 'destroy'])->name('replies.destroy')->middleware('auth');
+
+// 知识卡片路由
+Route::resource('knowledge-cards', App\Http\Controllers\KnowledgeCardController::class);
+Route::post('knowledge-cards/{knowledgeCard}/review', [App\Http\Controllers\KnowledgeCardController::class, 'review'])->name('knowledge-cards.review')->middleware('auth');
+Route::get('knowledge-cards-review', [App\Http\Controllers\KnowledgeCardController::class, 'reviewList'])->name('knowledge-cards.review-list')->middleware('auth');
